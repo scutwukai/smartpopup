@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>smartpopup demon</title>
+<style type="text/css">
+    body { height: 2000px; }
+    #pop1 { width:400px; height:300px; background-color:white; border: 1px red solid; text-align:center; line-height:300px; display:none }
+    #pop2 { width:200px; height:150px; background-color:white; border: 1px blue solid; text-align:center; line-height:150px; display:none }
+</style>
+<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="../smartpopup.js"></script>
+</head>
+<body>
+    <div>
+        <p><input type="button" onclick="pop1()" value="pop" /></p>
+    </div>
+    <div id="pop1">
+        <input type="button" onclick="pop2()" value="double pop" />
+        <input type="button" value="close" class="btnClose" />
+    </div>
+    <div id="pop2">
+        <input type="button" value="close" class="s-close"  />
+    </div>
+
+    <script type="text/javascript">
+        function pop1() {
+            $("#pop1").sPopup("open", {
+                "closeClass": "btnClose"
+            });
+        }
+
+        function pop2() {
+            $("#pop2").sPopup("open");
+        }
+    </script>
+</body>
