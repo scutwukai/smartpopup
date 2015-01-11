@@ -72,7 +72,7 @@
             $m.animate({"opacity": 0}, {
                 "step": function(){ opacity($m, this.opacity); },
                 "complete": function(){
-                    $(".s-modal"+pid).hide();
+                    $m.remove();
                     if(opt.onClose) opt.onClose();
                 }
             });
