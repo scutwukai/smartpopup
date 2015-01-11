@@ -71,6 +71,7 @@
                 "step": function(){ opacity($m, this.opacity); },
                 "complete": function(){
                     $m.remove();
+                    if(opt.closeRemove) $popup.remove();
                     if(opt.onClose) opt.onClose();
                 }
             });
@@ -199,6 +200,7 @@
     ////////////
     $.fn.sPopup.defaults = {
           "closeClass"  : "s-close"
+        , "closeRemove" : false
         , "modalColor"  : "#000"
         , "onClose"     : false
         , "onOpen"      : false
