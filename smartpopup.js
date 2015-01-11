@@ -67,7 +67,8 @@
             revokeScroll();
             revokeResize();
 
-            opt.closeRemove ? $popup.remove() : $popup.hide();
+            if(opt.closeRemove) $popup.remove();
+            else $popup.hide();
 
             var $m = $(".s-modal"+pid);
             $m.animate({"opacity": 0}, {
@@ -201,7 +202,7 @@
 
         var spopup = $popup.data("spopup");
         if(spopup === undefined){
-            spopup = new SmartPopup($popup, options)
+            spopup = new SmartPopup($popup, options);
             $popup.data("spopup", spopup);
         }else{
             spopup.config(options);
