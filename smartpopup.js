@@ -2,9 +2,7 @@
     "use strict";
 
     //global var
-    var pops  = {}
-       , scrolls   = {}
-       , $d        = $(document)
+    var $d        = $(document)
        , w         = window
        , $w        = $(w)
        , id        = 0
@@ -32,8 +30,6 @@
         };
 
         this.open = function(){
-            if(opt.onOpen) opt.onOpen();
-
             var $m = $(".s-modal"+pid);
             if($m.length < 1){
                 $m = $('<div class="s-modal'+pid+'"></div>');
@@ -55,6 +51,8 @@
                 "complete": function(){
                     reposition();
                     setScroll();
+
+                    if(opt.onOpen) opt.onOpen();
                 }
             });
 
@@ -132,46 +130,20 @@
         }
 
         function scroll(e){
-            /*var pos = calcPosition();
-            var curr = {
-                  "top": parseInt($popup.css("top"))
-                , "left": parseInt($popup.css("left"))
-            }
-
-            var wH = windowHeight()
-              , wW  = windowWidth()
-              , pH = (wH-$popup.outerHeight(true))/2
-              , pW = (wW-$popup.outerWidth(true))/2
-            ;
-
-            if(Math.abs(curr.top - pos.top) >= pH || Math.abs(curr.left - pos.top) >= pW){
-                animateRepos();
-
-                // cascade
-                $.each(scrolls, function(k){
-                    if(k == pid) return;
-                    pops[k].animateRepos();
-                });
-            }*/
-
             animateRepos();
         }
 
         function setScroll(){
             $(window).bind("scroll", scroll);
-            scrolls[pid] = true;
         }
 
         function revokeScroll(){
             $(window).unbind("scroll", scroll);
-            delete scrolls[pid];
         }
 
         // init
         setClose(opt.closeClass);
-
         $popup.attr("data-spopup", pid);
-        pops[pid] = this;
     };
 
     //////////////
@@ -212,14 +184,15 @@
         var $popup = $(this);
         if(options === undefined) options = {};
 
-        var pid = $popup.attr("data-spopup");
-        if (pid === undefined){
-            pid = (new SmartPopup($popup, options)).pid;
+        var spopup = $popup.data("spopup");
+        if(spopup === undefined){
+            spopup = new SmartPopup($popup, options)
+            $popup.data("spopup", spopup);
         }else{
-            pops[pid].config(options);
+            spopup.config(options);
         }
 
-        pops[pid][act]();
+        spopup[act]();
         return $popup;
     };
 
