@@ -3,32 +3,33 @@
 
     //global var
     var pops  = {}
-       , $d   = $(document)
-       , w    = window
-       , $w   = $(w)
-       , id   = 0
+       , scrolls   = {}
+       , $d        = $(document)
+       , w         = window
+       , $w        = $(w)
+       , id        = 0
     ;
 
-    var smartpopup = function($popup, options){
+    var SmartPopup = function($popup, options){
         var _this = this;
 
         // options
         var opt = $.extend({}, $.fn.sPopup.defaults, options);
 
         // variables
-        var pid = cid()
+        var pid = cid();
 
         // property
         this.pid = pid;
 
         // api
         this.config = function(options){
-            if(options.closeClass != undefined && opt.closeClass != options.closeClass){
+            if(options.closeClass !== undefined && opt.closeClass != options.closeClass){
                 revokeClose(opt.closeClass); 
                 setClose(options.closeClass);
             }
             opt = $.extend(opt, options);
-        }
+        };
 
         this.open = function(){
             if(opt.onOpen) opt.onOpen();
@@ -52,7 +53,8 @@
             }).animate({"opacity": opt.opacity}, {
                 "step": function(){ opacity($m, this.opacity); },
                 "complete": function(){
-                    reposition($m, $popup);
+                    reposition();
+                    setScroll();
                 }
             });
 
@@ -63,6 +65,7 @@
         };
 
         this.close = function(){
+            revokeScroll();
             $popup.hide();
 
             var $m = $(".s-modal"+pid);
@@ -75,20 +78,41 @@
             });
         };
 
+        this.reposition = function(){
+            reposition();
+        };
+
+        this.animateRepos = function(){
+            animateRepos();
+        };
+
         // private
-        function reposition($m, $popup){
+        function calcPosition(){
             var wH  = windowHeight()
               , wW  = windowWidth()
             ;
 
-            $m.css({
-                  "height"  : $d.height()
-                , "width"   : $d.width()
-            })
+            return {
+                  "top"  : (wH-$popup.outerHeight(true))/2+$w.scrollTop()
+                , "left" : (wW-$popup.outerWidth(true))/2+$w.scrollLeft()
+            };
+        }
+
+        function reposition(){
+            var pos = calcPosition(); 
 
             $popup.show().css({
-                  "top"       : (wH-$popup.outerHeight(true))/2+$w.scrollTop()
-                , "left"      : (wW-$popup.outerWidth(true))/2+$w.scrollLeft()
+                  "top"   : pos.top
+                , "left"  : pos.left 
+            });
+        }
+
+        function animateRepos(){
+            var pos = calcPosition(); 
+
+            $popup.show().stop().animate({
+                  "top"   : pos.top
+                , "left"  : pos.left 
             });
         }
 
@@ -105,6 +129,42 @@
         function revokeClose(classname){
             if(!classname) return;
             $popup.undelegate("."+classname, "click", close);
+        }
+
+        function scroll(e){
+            /*var pos = calcPosition();
+            var curr = {
+                  "top": parseInt($popup.css("top"))
+                , "left": parseInt($popup.css("left"))
+            }
+
+            var wH = windowHeight()
+              , wW  = windowWidth()
+              , pH = (wH-$popup.outerHeight(true))/2
+              , pW = (wW-$popup.outerWidth(true))/2
+            ;
+
+            if(Math.abs(curr.top - pos.top) >= pH || Math.abs(curr.left - pos.top) >= pW){
+                animateRepos();
+
+                // cascade
+                $.each(scrolls, function(k){
+                    if(k == pid) return;
+                    pops[k].animateRepos();
+                });
+            }*/
+
+            animateRepos();
+        }
+
+        function setScroll(){
+            $(window).bind("scroll", scroll);
+            scrolls[pid] = true;
+        }
+
+        function revokeScroll(){
+            $(window).unbind("scroll", scroll);
+            delete scrolls[pid];
         }
 
         // init
@@ -137,15 +197,24 @@
         });
     }
 
+    function size(obj){
+        var c = 0;
+        for(var k in obj){
+            if(obj.hasOwnProperty(k)) c++;
+        }
+
+        return c;
+    }
+
     /////////////
 
     $.fn.sPopup = function(act, options) {
         var $popup = $(this);
-        if(options == undefined) options = {};
+        if(options === undefined) options = {};
 
         var pid = $popup.attr("data-spopup");
-        if (pid == undefined){
-            pid = (new smartpopup($popup, options)).pid;
+        if (pid === undefined){
+            pid = (new SmartPopup($popup, options)).pid;
         }else{
             pops[pid].config(options);
         }
