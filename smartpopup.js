@@ -51,6 +51,7 @@
                 "complete": function(){
                     reposition();
                     setScroll();
+                    setResize();
 
                     if(opt.onOpen) opt.onOpen();
                 }
@@ -64,14 +65,15 @@
 
         this.close = function(){
             revokeScroll();
-            $popup.hide();
+            revokeResize();
+
+            opt.closeRemove ? $popup.remove() : $popup.hide();
 
             var $m = $(".s-modal"+pid);
             $m.animate({"opacity": 0}, {
                 "step": function(){ opacity($m, this.opacity); },
                 "complete": function(){
                     $m.remove();
-                    if(opt.closeRemove) $popup.remove();
                     if(opt.onClose) opt.onClose();
                 }
             });
@@ -140,6 +142,18 @@
 
         function revokeScroll(){
             $(window).unbind("scroll", scroll);
+        }
+
+        function resize(e){
+            animateRepos();
+        }
+
+        function setResize(){
+            $(window).bind("resize", resize);
+        }
+
+        function revokeResize(){
+            $(window).unbind("resize", resize);
         }
 
         // init
