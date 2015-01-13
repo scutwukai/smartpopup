@@ -1,6 +1,14 @@
 ;(function($){
     "use strict";
 
+    // const
+    var GOLD = 0.618;
+    var STATUS = {
+          "INIT": 0
+        , "OPENED": 1
+        , "CLOSED": 2
+    };
+
     //global var
     var $d        = $(document)
        , w         = window
@@ -15,7 +23,11 @@
         var opt = $.extend({}, $.fn.sPopup.defaults, options);
 
         // variables
-        var pid = cid();
+        var pid = cid()
+          , st = STATUS.INIT
+          // big pop in both dimension
+          , bp = {"h": false, "w": false}
+        ;
 
         // property
         this.pid = pid;
@@ -92,16 +104,24 @@
         function calcPosition(){
             var wH  = windowHeight()
               , wW  = windowWidth()
+              , oT  = (wH-$popup.outerHeight(true))/2  // offset Top
+              , oL  = (wW-$popup.outerWidth(true))/2   // offset Left
             ;
 
+            bp.h = (oT < 0);
+            bp.w = (oL < 0);
+
+            if(bp.h){ oT = wH/2 * (1 - GOLD); }
+            if(bp.w){ oL = wW/2 * (1 - GOLD); }
+
             return {
-                  "top"  : (wH-$popup.outerHeight(true))/2+$w.scrollTop()
-                , "left" : (wW-$popup.outerWidth(true))/2+$w.scrollLeft()
+                  "top"  : Math.round(oT) + $w.scrollTop()
+                , "left" : Math.round(oL) + $w.scrollLeft()
             };
         }
 
-        function reposition(){
-            var pos = calcPosition(); 
+        function reposition(pos){
+            if(pos === undefined) pos = calcPosition(); 
 
             $popup.show().css({
                   "top"   : pos.top
@@ -109,8 +129,8 @@
             });
         }
 
-        function animateRepos(){
-            var pos = calcPosition(); 
+        function animateRepos(pos){
+            if(pos === undefined) pos = calcPosition(); 
 
             $popup.show().stop().animate({
                   "top"   : pos.top
@@ -134,7 +154,13 @@
         }
 
         function scroll(e){
-            animateRepos();
+            var pos = calcPosition();
+
+            if(bp.h) delete pos.top;
+            if(bp.w) delete pos.left;
+
+            if(size(pos) < 1) return;
+            animateRepos(pos);
         }
 
         function setScroll(){
@@ -146,7 +172,13 @@
         }
 
         function resize(e){
-            animateRepos();
+            var pos = calcPosition();
+
+            if(bp.h) delete pos.top;
+            if(bp.w) delete pos.left;
+
+            if(size(pos) < 1) return;
+            animateRepos(pos);
         }
 
         function setResize(){

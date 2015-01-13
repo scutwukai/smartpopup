@@ -4,10 +4,11 @@
 <meta charset="utf-8">
 <title>smartpopup demo</title>
 <style type="text/css">
-    body { height: 2000px; width:4000px; }
+    body { width:4000px; height: 2000px; }
     #pop1 { width:400px; height:300px; background-color:red; border: 5px solid; text-align:center; line-height:300px; display:none }
     #pop2 { width:200px; height:150px; background-color:blue; border: 5px solid; text-align:center; line-height:150px; display:none }
     #pop3 { width:400px; height:300px; background-color:green; border: 5px solid; text-align:center; line-height:300px; display:none }
+    #pop4 { width:1000px; height:100px; background-color:purple; border: 5px solid; padding-top:900px; text-align:center; display:none }
 </style>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="../smartpopup.js"></script>
@@ -16,6 +17,7 @@
     <div>
         <p><input type="button" onclick="pop1()" value="pop in the center" /></p>
         <p><input type="button" onclick="pop3()" value="pop single use" /></p>
+        <p><input type="button" onclick="pop4()" value="big pop" /></p>
     </div>
     <div id="pop1">
         <input type="button" onclick="pop2()" value="double pop" />
@@ -25,6 +27,9 @@
         <input type="button" value="close" class="s-close"  />
     </div>
     <div id="pop3">
+        <input type="button" value="close" class="s-close"  />
+    </div>
+    <div id="pop4">
         <input type="button" value="close" class="s-close"  />
     </div>
 
@@ -46,6 +51,10 @@
             }
 
             $("#pop3").sPopup("open", {"closeRemove": true});
+        }
+
+        function pop4() {
+            $("#pop4").sPopup("open");
         }
     </script>
 </body>
