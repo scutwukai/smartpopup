@@ -10,10 +10,10 @@
     };
 
     //global var
-    var $d        = $(document)
-       , w         = window
-       , $w        = $(w)
-       , id        = 0
+    var $d    = $(document)
+       , w    = window
+       , $w   = $(w)
+       , id   = 0
     ;
 
     var SmartPopup = function($popup, options){
@@ -70,9 +70,11 @@
             });
 
             $popup.css({
-                  "position"  : "absolute"
-                , "zIndex": opt.zIndex + (pid * 2) + 1
+                  "position" : "absolute"
+                , "zIndex"   : opt.zIndex + (pid * 2) + 1
             });
+
+            hideSelectForIE6();
         };
 
         this.close = function(){
@@ -90,6 +92,8 @@
                     if(opt.onClose) opt.onClose();
                 }
             });
+
+            recoverSelectForIE6();
         };
 
         this.reposition = function(){
@@ -189,9 +193,36 @@
             $(window).unbind("resize", resize);
         }
 
+        function hideSelectForIE6(){
+            if(!opt.ie6) return;
+
+            $("select:visible").filter(function(){
+                return (!$(this).is($popup)) && (!$(this).parents(".s-popup").is($popup));
+            }).addClass("s-iefix").hide();
+        }
+
+        function recoverSelectForIE6(){
+            if(!opt.ie6) return;
+
+            var found = false;
+            for(var i=(pid-1); i>=0; i--){
+                var $prepop = $(".s-popup[data-spopup="+i+"]");
+
+                found = $prepop.is(".s-iefix, :visible");
+                if(!found) continue; 
+
+                $prepop.filter(".s-iefix").removeClass("s-iefix").show();
+                $prepop.find(".s-iefix").removeClass("s-iefix").show();
+                break;
+            }
+
+            if(found) return;
+            $(".s-iefix").removeClass("s-iefix").show();
+        }
+
         // init
         setClose(opt.closeClass);
-        $popup.attr("data-spopup", pid);
+        $popup.addClass("s-popup").attr("data-spopup", pid);
     };
 
     //////////////
@@ -226,6 +257,11 @@
         return c;
     }
 
+    function isIE6(){
+        var $div = $("<div><!--[if lte IE 6]><i></i><![endif]--></div>");
+        return $div.find("i").length > 0;
+    }
+
     /////////////
 
     $.fn.sPopup = function(act, options) {
@@ -253,5 +289,6 @@
         , "onOpen"      : false
         , "opacity"     : 0.7
         , "zIndex"      : 9999
+        , "ie6"         : isIE6()
     };
 })(jQuery);

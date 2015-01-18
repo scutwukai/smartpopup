@@ -5,10 +5,12 @@
 <title>smartpopup demo</title>
 <style type="text/css">
     body { width:4000px; height: 2000px; }
-    #pop1 { width:400px; height:300px; background-color:red; border: 5px solid; text-align:center; line-height:300px; display:none }
-    #pop2 { width:200px; height:150px; background-color:blue; border: 5px solid; text-align:center; line-height:150px; display:none }
-    #pop3 { width:400px; height:300px; background-color:green; border: 5px solid; text-align:center; line-height:300px; display:none }
-    #pop4 { width:1000px; height:100px; background-color:purple; border: 5px solid; padding-top:900px; text-align:center; display:none }
+    #pop1 { width:400px; height:300px; background-color:red; border: 5px solid; text-align:center; line-height:300px; display:none; }
+    #pop2 { width:200px; height:150px; background-color:blue; border: 5px solid; text-align:center; line-height:150px; display:none; }
+    #pop3 { width:400px; height:300px; background-color:green; border: 5px solid; text-align:center; line-height:300px; display:none; }
+    #pop4 { width:1000px; height:100px; background-color:purple; border: 5px solid; padding-top:900px; text-align:center; display:none; }
+    #pop5 { width:400px; height:300px; background-color:yellow; border: 5px solid; text-align:center; line-height:150px; display:none; }
+    #pop6 { display:none; }
 </style>
 <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="../smartpopup.js"></script>
@@ -16,8 +18,12 @@
 <body>
     <div>
         <p><input type="button" onclick="pop1()" value="pop in the center" /></p>
-        <p><input type="button" onclick="pop3()" value="pop single use" /></p>
+        <p><input type="button" onclick="pop3()" value="single-use pop" /></p>
         <p><input type="button" onclick="pop4()" value="big pop" /></p>
+        <p>
+            <select><option>will hide after pop and show after close in ie6</option></select></br>
+            <input type="button" onclick="pop5()" value="ie6 compatibly I" />&nbsp;<input type="button" onclick="pop6()" value="ie6 compatibly II" />
+        </p>
     </div>
     <div id="pop1">
         <input type="button" onclick="pop2()" value="double pop" />
@@ -32,6 +38,11 @@
     <div id="pop4">
         <input type="button" value="close" class="s-close"  />
     </div>
+    <div id="pop5">
+        <p><select><option>will hide while another pop is opened</option></select></p>
+        <p><input type="button" value="another pop" onclick="pop2()" />&nbsp;<input type="button" value="close" class="s-close"  /></p>
+    </div>
+    <select id="pop6" onchange="change()"><option>close</option><option>open another</option></select>
 
     <script type="text/javascript">
         function pop1() {
@@ -55,6 +66,22 @@
 
         function pop4() {
             $("#pop4").sPopup("open");
+        }
+
+        function pop5() {
+            $("#pop5").sPopup("open");
+        }
+
+        function pop6() {
+            $("#pop6").sPopup("open");
+        }
+
+        function change() {
+            var cmd = $("#pop6").val();
+            switch(cmd){
+                case "open another": { pop2(); break}
+                case "close": { $("#pop6").sPopup("close"); }
+            }
         }
     </script>
 </body>
