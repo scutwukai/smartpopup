@@ -29,9 +29,6 @@
           , bp = {"h": false, "w": false}
         ;
 
-        // property
-        this.pid = pid;
-
         // api
         this.config = function(options){
             if(options.closeClass !== undefined && opt.closeClass != options.closeClass){
@@ -42,15 +39,16 @@
         };
 
         this.open = function(){
-            var $m = $(".s-modal"+pid);
-            if($m.length < 1){
-                $m = $('<div class="s-modal'+pid+'"></div>');
-                $m.appendTo("body");
-            }
+            if(st === STATUS.OPENED) return;
+            if(st === STATUS.CLOSED) pid = cid();
+            st = STATUS.OPENED;
+
+            $popup.addClass("s-popup").attr("data-spopup", pid);
+            var $m = $('<div class="s-modal'+pid+'"></div>').appendTo("body");
 
             opacity($m, 0);
 
-            $m.show().css({
+            $m.css({
                   "position"         : 'absolute'
                 , "top"              : 0
                 , "left"             : 0
@@ -78,6 +76,9 @@
         };
 
         this.close = function(){
+            if(st !== STATUS.OPENED) return;
+            st = STATUS.CLOSED;
+
             revokeScroll();
             revokeResize();
 
@@ -88,12 +89,14 @@
             $m.animate({"opacity": 0}, {
                 "step": function(){ opacity($m, this.opacity); },
                 "complete": function(){
+                    $popup.removeClass("s-popup").removeAttr("data-spopup");
                     $m.remove();
+
+                    recoverSelectForIE6();
+
                     if(opt.onClose) opt.onClose();
                 }
             });
-
-            recoverSelectForIE6();
         };
 
         this.reposition = function(){
@@ -222,7 +225,6 @@
 
         // init
         setClose(opt.closeClass);
-        $popup.addClass("s-popup").attr("data-spopup", pid);
     };
 
     //////////////
