@@ -207,20 +207,19 @@
         function recoverSelectForIE6(){
             if(!opt.ie6) return;
 
-            var found = false;
+            var found = false, buf;
             for(var i=(pid-1); i>=0; i--){
                 var $prepop = $(".s-popup[data-spopup="+i+"]");
 
                 found = $prepop.is(".s-iefix, :visible");
                 if(!found) continue; 
 
-                $prepop.filter(".s-iefix").removeClass("s-iefix").show();
-                $prepop.find(".s-iefix").removeClass("s-iefix").show();
+                buf = $prepop.filter(".s-iefix").add($prepop.find(".s-iefix"));
                 break;
             }
 
-            if(found) return;
-            $(".s-iefix").removeClass("s-iefix").show();
+            if(!found) buf = $(".s-iefix");
+            buf.removeClass("s-iefix").show();
         }
 
         // init
