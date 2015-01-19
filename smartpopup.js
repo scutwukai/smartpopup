@@ -1,3 +1,10 @@
+/*! smartpopup v0.1: http://github.com/BorisMoore/jsrender and http://jsviews.com/jsviews
+ *
+ * lightweight popup plugin for jquery with ie6 supported.
+ *
+ * Copyright 2015, Kai Wu
+ * Released under the MIT License.
+ */
 ;(function($){
     "use strict";
 
