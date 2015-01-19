@@ -3,7 +3,7 @@ lightweight popup plugin for jquery with ie6 supported.
 
 # jQuery compatiblity
 
-fully tested for 1.6.4. highter version should work in theory.
+fully tested for 1.6.4. higher version should work in theory.
 
 # version
 
